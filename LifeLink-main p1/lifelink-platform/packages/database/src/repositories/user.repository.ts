@@ -1,0 +1,25 @@
+import { Prisma, UserStatus } from "@prisma/client";
+import { database } from "../client";
+
+export function findUserById(id: string) {
+  return database.user.findUnique({
+    where: { id },
+    include: { donorProfile: true, recipientProfile: true },
+  });
+}
+
+export function findUserByEmail(email: string) {
+  return database.user.findFirst({ where: { email: { equals: email, mode: "insensitive" } } });
+}
+
+export function createUser(data: Prisma.UserCreateInput) {
+  return database.user.create({ data });
+}
+
+export function saveUser(id: string, data: Prisma.UserUpdateInput) {
+  return database.user.update({ where: { id }, data });
+}
+
+export function updateUserStatus(id: string, status: UserStatus) {
+  return database.user.update({ where: { id }, data: { status } });
+}
